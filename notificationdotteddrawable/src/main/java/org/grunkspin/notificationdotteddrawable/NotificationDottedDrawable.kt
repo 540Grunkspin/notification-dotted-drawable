@@ -102,5 +102,9 @@ class NotificationDottedDrawable(
     override fun setTintMode(tintMode: PorterDuff.Mode?) {
         DrawableCompat.setTintMode(baseDrawable, tintMode)
     }
+
+    override fun mutate(): Drawable {
+        return baseDrawable.mutate()
+    }
 }
 
