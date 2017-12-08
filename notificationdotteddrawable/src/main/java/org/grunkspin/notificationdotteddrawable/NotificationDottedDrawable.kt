@@ -40,7 +40,7 @@ class NotificationDottedDrawable(
     override fun getOpacity(): Int = baseDrawable.opacity
 
     override fun setColorFilter(colorFilter: ColorFilter?) {
-        dotDrawable.colorFilter = colorFilter
+        baseDrawable.colorFilter = colorFilter
     }
 
 }
