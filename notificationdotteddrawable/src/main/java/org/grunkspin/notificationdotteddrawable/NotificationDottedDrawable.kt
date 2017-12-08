@@ -34,13 +34,13 @@ class NotificationDottedDrawable(
     }
 
     override fun setAlpha(alpha: Int) {
-        // Nothing to do.
+        baseDrawable.alpha = alpha
     }
 
-    override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
+    override fun getOpacity(): Int = baseDrawable.opacity
 
     override fun setColorFilter(colorFilter: ColorFilter?) {
-        // Nothing to do.
+        dotDrawable.colorFilter = colorFilter
     }
 
 }
