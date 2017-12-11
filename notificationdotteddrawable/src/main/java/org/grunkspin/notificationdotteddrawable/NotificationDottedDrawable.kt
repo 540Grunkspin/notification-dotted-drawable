@@ -2,20 +2,26 @@ package org.grunkspin.notificationdotteddrawable
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.content.res.Resources
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.ColorFilter
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.support.annotation.DrawableRes
 import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.drawable.DrawableCompat
 
 class NotificationDottedDrawable(
-        context: Context,
-        private val baseDrawable: Drawable
+        private val context: Context,
+        private val baseDrawable: Drawable,
+        hasDot: Boolean = false
 ) : Drawable() {
 
     private val dotDrawable: Drawable = ContextCompat.getDrawable(context, R.drawable.dot)
+
+    var hasDot: Boolean = hasDot
+        set(value) {
+            field = value
+            invalidateSelf()
+        }
 
     constructor(
             context: Context,
@@ -23,16 +29,50 @@ class NotificationDottedDrawable(
     ) : this(context, context.getDrawable(baseDrawableRes))
 
     override fun draw(canvas: Canvas?) {
+        drawBaseDrawable(canvas)
+        if (hasDot) drawDot(canvas)
+    }
+
+    private fun drawBaseDrawable(canvas: Canvas?) {
         baseDrawable.bounds = bounds
         baseDrawable.draw(canvas)
+    }
 
+    private fun drawDot(canvas: Canvas?) {
         dotDrawable.setBounds(
                 bounds.right - dotDrawable.intrinsicWidth,
-                0,
+                bounds.top,
                 bounds.right,
-                dotDrawable.intrinsicHeight
+                bounds.top + dotDrawable.intrinsicHeight
         )
         dotDrawable.draw(canvas)
+    }
+
+    private val _constantState = object : Drawable.ConstantState() {
+        override fun newDrawable(): Drawable {
+            val base = baseDrawable.constantState.newDrawable()
+            return NotificationDottedDrawable(context, base, this@NotificationDottedDrawable.hasDot)
+        }
+
+        override fun getChangingConfigurations(): Int {
+            return baseDrawable.changingConfigurations
+        }
+    }
+
+    override fun getConstantState(): ConstantState = _constantState
+
+    override fun isStateful(): Boolean = baseDrawable.isStateful
+
+    override fun setState(stateSet: IntArray?): Boolean = baseDrawable.setState(stateSet)
+
+    override fun getState(): IntArray = baseDrawable.state
+
+    override fun setTint(tintColor: Int) {
+        DrawableCompat.setTint(baseDrawable, tintColor)
+    }
+
+    override fun setTintList(tint: ColorStateList?) {
+        DrawableCompat.setTintList(baseDrawable, tint)
     }
 
     override fun setAlpha(alpha: Int) {
@@ -45,66 +85,8 @@ class NotificationDottedDrawable(
         baseDrawable.colorFilter = colorFilter
     }
 
-    override fun applyTheme(t: Resources.Theme) {
-        super.applyTheme(t)
-        DrawableCompat.applyTheme(baseDrawable, t)
-    }
-
-    override fun canApplyTheme(): Boolean {
-        return DrawableCompat.canApplyTheme(baseDrawable)
-    }
-
-    override fun clearColorFilter() {
-        super.clearColorFilter()
-        baseDrawable.clearColorFilter()
-    }
-
-    override fun getAlpha(): Int {
-        return DrawableCompat.getAlpha(baseDrawable)
-    }
-
-    override fun getCallback(): Callback {
-        return baseDrawable.callback
-    }
-
-    override fun getChangingConfigurations(): Int {
-        return baseDrawable.changingConfigurations
-    }
-
-    override fun getColorFilter(): ColorFilter {
-        return DrawableCompat.getColorFilter(baseDrawable)
-    }
-
-    override fun getConstantState(): ConstantState {
-        return baseDrawable.constantState
-    }
-
-    override fun getCurrent(): Drawable {
-        return baseDrawable.current
-    }
-
-    override fun isStateful(): Boolean {
-        return baseDrawable.isStateful
-    }
-
-    override fun getState(): IntArray {
-        return baseDrawable.state
-    }
-
-    override fun setTint(tintColor: Int) {
-        DrawableCompat.setTint(baseDrawable, tintColor)
-    }
-
-    override fun setTintList(tint: ColorStateList?) {
-        DrawableCompat.setTintList(baseDrawable, tint)
-    }
-
-    override fun setTintMode(tintMode: PorterDuff.Mode?) {
-        DrawableCompat.setTintMode(baseDrawable, tintMode)
-    }
-
     override fun mutate(): Drawable {
-        return baseDrawable.mutate()
+        return NotificationDottedDrawable(context, baseDrawable.mutate(), hasDot)
     }
 }
 
