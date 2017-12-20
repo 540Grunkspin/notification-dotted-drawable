@@ -1,9 +1,11 @@
-package org.grunkspin.notificationdotteddrawable
+package org.grunkspin.notificationdotteddrawable.example
 
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
 import android.widget.ImageView
+import org.grunkspin.notificationdotteddrawable.NotificationDottedDrawable
+import org.grunkspin.notificationdotteddrawable.example.R
 
 class MainActivity : AppCompatActivity() {
 

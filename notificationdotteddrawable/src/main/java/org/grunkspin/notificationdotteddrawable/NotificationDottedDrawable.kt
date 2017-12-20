@@ -26,7 +26,7 @@ class NotificationDottedDrawable(
     constructor(
             context: Context,
             @DrawableRes baseDrawableRes: Int
-    ) : this(context, context.getDrawable(baseDrawableRes))
+    ) : this(context, ContextCompat.getDrawable(context, baseDrawableRes))
 
     override fun draw(canvas: Canvas?) {
         drawBaseDrawable(canvas)
